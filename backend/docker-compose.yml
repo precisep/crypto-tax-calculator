@@ -1,28 +1,40 @@
-FROM php:8.2-cli
+FROM php:8.2-fpm
 
-# System deps
+# ---------- System Dependencies ----------
 RUN apt-get update && apt-get install -y \
-    git unzip curl libzip-dev zip
+    git unzip curl libzip-dev zip nginx \
+    && docker-php-ext-install pdo pdo_mysql zip
 
-# PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql zip
+# ---------- Composer ----------
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
+# ---------- Working Directory ----------
 WORKDIR /var/www
 
-# Copy composer first to leverage caching
+# Copy composer files first (build cache optimization)
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Copy app
+# Copy application
 COPY . .
 
-# Setup environment
+# Laravel setup
 RUN cp .env.example .env || true
 RUN php artisan key:generate --force
 RUN php artisan config:clear
+RUN php artisan route:clear
+RUN php artisan view:clear
 
-# Use the port Render expects
-CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=${PORT:-10000}"]
+# Permissions
+RUN chown -R www-data:www-data storage bootstrap/cache
+
+# ---------- NGINX CONFIG ----------
+COPY nginx.conf /etc/nginx/sites-available/default
+
+# ---------- Startup Script ----------
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
+
+EXPOSE 10000
+
+CMD ["/start.sh"]

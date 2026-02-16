@@ -11,12 +11,17 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # ---------- Working Directory ----------
 WORKDIR /var/www
 
-# Copy composer files first (build cache optimization)
+# Copy composer files first (for caching)
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Copy application
+# Install dependencies WITHOUT running scripts (artisan not available yet)
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+
+# Copy the entire application
 COPY . .
+
+# Now run the post-install scripts (e.g., package discovery)
+RUN composer run-script post-autoload-dump || true
 
 # Laravel setup
 RUN cp .env.example .env || true
@@ -38,4 +43,3 @@ RUN chmod +x /start.sh
 EXPOSE 10000
 
 ENTRYPOINT ["/start.sh"]
-

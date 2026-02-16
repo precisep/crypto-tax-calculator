@@ -12,9 +12,17 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
 
+# Copy composer first to leverage caching
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --optimize-autoloader
+
+# Copy app
 COPY . .
 
-EXPOSE 10000
+# Setup environment
+RUN cp .env.example .env || true
+RUN php artisan key:generate --force
+RUN php artisan config:clear
 
-CMD ["sh", "-c", "if [ ! -f .env ]; then cp .env.example .env; fi && composer install --no-dev --optimize-autoloader && php artisan key:generate --force && php artisan config:clear && php artisan serve --host=0.0.0.0 --port=$PORT"]
-
+# Use the port Render expects
+CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=${PORT:-10000}"]

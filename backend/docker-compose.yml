@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    container_name: crypto_tax_php
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+    ports:
+      - "8000:8000"
+    command: sh -c "\
+      if [ ! -f .env ]; then cp .env.example .env; fi && \
+      composer install && \
+      php artisan key:generate && \
+      php artisan config:clear && \
+      php artisan serve --host=0.0.0.0 --port=8000"

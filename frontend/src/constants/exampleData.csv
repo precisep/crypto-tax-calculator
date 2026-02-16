@@ -1,0 +1,8 @@
+coin,type,amount,price,date,wallet,fee,fee_coin,description,from_coin,to_coin
+BTC,buy,1,150000.00,2020-04-01,Luno,0.0025,ZAR,"Initial BTC investment",,
+BTC,buy,1,500000.00,2021-06-01,Luno,0.0025,ZAR,"Second BTC buy",,
+BTC,sell,0.5,400000.00,2022-08-01,Luno,0.0025,ZAR,"Partial BTC sale",,
+ETH,buy,10,22000.00,2022-10-01,Binance,0.001,ZAR,"ETH position",,
+ETH,trade,5,30000.00,2023-09-01,Binance,0.001,ZAR,"ETH to SOL trade",ETH,SOL
+ETH,sell,2,18000.00,2024-03-01,Binance,0.001,ZAR,"ETH sell at loss",,
+BTC,sell,1.5,1200000.00,2024-11-01,Luno,0.0025,ZAR,"Final BTC exit",,

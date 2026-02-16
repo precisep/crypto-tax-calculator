@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-
+import { API_BASE_URL } from './config/api';
 const AuthContext = createContext(null);
 
 export const useAuth = () => {
@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
       const storedToken = localStorage.getItem('token');
       if (storedToken) {
         try {
-          const response = await fetch('http://localhost:8000/api/user', {
+          const response = await fetch(`${API_BASE_URL}/api/user`, {
             headers: {
               'Authorization': `Bearer ${storedToken}`,
             },
@@ -71,7 +71,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await fetch('http://localhost:8000/api/login', {
+      const response = await fetch(`${API_BASE_URL}/api/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -96,7 +96,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (name, email, password) => {
     try {
-      const response = await fetch('http://localhost:8000/api/register', {
+      const response = await fetch(`${API_BASE_URL}/api/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -120,13 +120,13 @@ export const AuthProvider = ({ children }) => {
   };
 
   const googleLogin = () => {
-    window.location.href = 'http://localhost:8000/api/auth/google';
+    window.location.href = `${API_BASE_URL}/api/auth/google`;
   };
 
   const logout = async () => {
     if (token) {
       try {
-        await fetch('http://localhost:8000/api/logout', {
+        await fetch(`${API_BASE_URL}/api/logout`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -145,7 +145,7 @@ export const AuthProvider = ({ children }) => {
 
   const saveTransactions = async (transactions, name) => {
     try {
-      const response = await fetch('http://localhost:8000/api/save-transactions', {
+      const response = await fetch(`${API_BASE_URL}/api/save-transactions`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -163,7 +163,7 @@ export const AuthProvider = ({ children }) => {
 
   const getCalculations = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/calculations', {
+      const response = await fetch(`${API_BASE_URL}api/calculations`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -178,7 +178,7 @@ export const AuthProvider = ({ children }) => {
 
   const loadCalculation = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/calculations/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/calculations/${id}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },

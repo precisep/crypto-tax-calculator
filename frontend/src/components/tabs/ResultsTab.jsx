@@ -209,8 +209,6 @@ const ResultsTab = ({
                               {buy.fee ? (
                                 <>
                                   {formatCurrency(buy.fee)}
-                                  <br />
-                                  <small>{formatFeeRate(buy.fee_rate || 0)}</small>
                                 </>
                               ) : '-'}
                             </td>
